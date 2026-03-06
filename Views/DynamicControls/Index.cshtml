@@ -1,0 +1,236 @@
+@{
+    ViewBag.Title = "Dynamic Control Generator";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Control Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        h2   { color: #2E4099; }
+        p.subtitle { color: #666; margin-top: -10px; margin-bottom: 24px; font-size: 13px; }
+
+        .card {
+            background: #fff;
+            padding: 28px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+
+        label { display: block; font-weight: bold; margin-bottom: 6px; color: #333; }
+
+        select, input[type=number] {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button#generateBtn {
+            background-color: #2E4099;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button#generateBtn:hover { background-color: #1a2d7a; }
+
+        #output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+            min-height: 60px;
+        }
+        #output h4 { margin-top: 0; color: #2E4099; }
+
+        .gen-control { display: block; margin-bottom: 10px; }
+
+        .gen-control input[type=text],
+        .gen-control input[type=email],
+        .gen-control input[type=password],
+        .gen-control textarea,
+        .gen-control select {
+            padding: 7px 10px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .gen-control input[type=button] {
+            padding: 7px 18px;
+            background: #2E4099;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .gen-control label.cb-label,
+        .gen-control label.rb-label {
+            font-weight: normal;
+            display: inline;
+            margin-left: 6px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #2E4099;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .nav-link:hover { background: #1a2d7a; }
+    </style>
+</head>
+<body>
+    <h2>Dynamic Control Generator</h2>
+    <p class="subtitle">Select a control type and specify how many to generate.</p>
+
+    <a class="nav-link" href="/Employee/Index">← Back to Question 1</a>
+
+    <div class="card">
+        <label for="controlType">Select Control Type</label>
+        <select id="controlType">
+            <option value="textbox">TextBox</option>
+            <option value="checkbox">CheckBox</option>
+            <option value="radiobutton">RadioButton</option>
+            <option value="button">Button</option>
+            <option value="dropdown">DropDownList</option>
+            <option value="textarea">TextArea</option>
+            <option value="password">Password</option>
+            <option value="email">Email</option>
+        </select>
+
+        <label for="controlCount">Number of Controls to Generate</label>
+        <input type="number" id="controlCount" min="1" max="20" value="3" />
+
+        <button id="generateBtn" onclick="generateControls()">Generate Controls</button>
+    </div>
+
+    <div id="output" style="display:none;">
+        <h4 id="outputTitle"></h4>
+        <div id="controlsContainer"></div>
+    </div>
+
+    <script>
+        function generateControls() {
+            var type  = document.getElementById("controlType").value;
+            var count = parseInt(document.getElementById("controlCount").value);
+            var label = document.getElementById("controlType").options[document.getElementById("controlType").selectedIndex].text;
+
+            if (isNaN(count) || count < 1) {
+                alert("Please enter a valid number (minimum 1).");
+                return;
+            }
+            if (count > 20) {
+                alert("Maximum 20 controls allowed.");
+                return;
+            }
+
+            var container = document.getElementById("controlsContainer");
+            container.innerHTML = "";
+
+            for (var i = 1; i <= count; i++) {
+                var wrapper = document.createElement("div");
+                wrapper.className = "gen-control";
+
+                var el;
+
+                switch (type) {
+                    case "textbox":
+                        el = document.createElement("input");
+                        el.type = "text";
+                        el.placeholder = "TextBox " + i;
+                        el.name = "textbox_" + i;
+                        break;
+
+                    case "checkbox":
+                        el = document.createElement("input");
+                        el.type = "checkbox";
+                        el.id = "chk_" + i;
+                        var lbl = document.createElement("label");
+                        lbl.htmlFor = "chk_" + i;
+                        lbl.className = "cb-label";
+                        lbl.innerText = "CheckBox " + i;
+                        wrapper.appendChild(el);
+                        wrapper.appendChild(lbl);
+                        container.appendChild(wrapper);
+                        continue;
+
+                    case "radiobutton":
+                        el = document.createElement("input");
+                        el.type = "radio";
+                        el.name  = "radioGroup";
+                        el.id    = "rb_" + i;
+                        var lbl2 = document.createElement("label");
+                        lbl2.htmlFor = "rb_" + i;
+                        lbl2.className = "rb-label";
+                        lbl2.innerText = "Option " + i;
+                        wrapper.appendChild(el);
+                        wrapper.appendChild(lbl2);
+                        container.appendChild(wrapper);
+                        continue;
+
+                    case "button":
+                        el = document.createElement("input");
+                        el.type  = "button";
+                        el.value = "Button " + i;
+                        break;
+
+                    case "dropdown":
+                        el = document.createElement("select");
+                        for (var j = 1; j <= 3; j++) {
+                            var opt = document.createElement("option");
+                            opt.text  = "Option " + j;
+                            opt.value = j;
+                            el.appendChild(opt);
+                        }
+                        break;
+
+                    case "textarea":
+                        el = document.createElement("textarea");
+                        el.placeholder = "TextArea " + i;
+                        el.rows = 3;
+                        break;
+
+                    case "password":
+                        el = document.createElement("input");
+                        el.type = "password";
+                        el.placeholder = "Password " + i;
+                        break;
+
+                    case "email":
+                        el = document.createElement("input");
+                        el.type = "email";
+                        el.placeholder = "Email " + i;
+                        break;
+                }
+
+                wrapper.appendChild(el);
+                container.appendChild(wrapper);
+            }
+
+            document.getElementById("outputTitle").innerText =
+                count + " x " + label + " generated:";
+            document.getElementById("output").style.display = "block";
+        }
+    </script>
+</body>
+</html>

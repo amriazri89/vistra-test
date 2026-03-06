@@ -1,0 +1,101 @@
+@model IEnumerable<VistraTest.Models.EmployeeBiodata>
+
+@{
+    ViewBag.Title = "Employee List";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        h2   { color: #2E4099; }
+        p.subtitle { color: #666; margin-top: -10px; margin-bottom: 20px; font-size: 13px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #2E4099;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+        }
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td     { background-color: #f0f4ff; }
+
+        .badge-q1 {
+            background: #d4edda;
+            color: #155724;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .no-result {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #2E4099;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .nav-link:hover { background: #1a2d7a; }
+    </style>
+</head>
+<body>
+    <h2>Employee Biodata</h2>
+    <p class="subtitle">
+        Showing employees whose name starts with <strong>A, G or V</strong>
+        and born in <strong>Q1 (January – March)</strong>
+    </p>
+
+    <a class="nav-link" href="/DynamicControls/Index">Go to Question 2 →</a>
+
+    @if (Model != null && Model.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee No</th>
+                    <th>Employee Name</th>
+                    <th>Birth Date</th>
+                    <th>Birth Month</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in Model)
+                {
+                    <tr>
+                        <td>@emp.EmployeeNo</td>
+                        <td>@emp.EmployeeName</td>
+                        <td>@emp.BirthDate.ToString("dd MMM yyyy")</td>
+                        <td><span class="badge-q1">@emp.BirthDate.ToString("MMMM")</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-result">No employees found matching the criteria.</p>
+    }
+</body>
+</html>
